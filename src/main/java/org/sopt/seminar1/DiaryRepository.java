@@ -26,7 +26,7 @@ public class DiaryRepository {
         return diaryList;
     }
 
-    String delete(final long id){
+    String delete(final Long id){
         checkDiaryExists(id);
         final String deletedValue =  storage.get(id);
         final long lastIndex = numbering.longValue();
@@ -41,12 +41,12 @@ public class DiaryRepository {
         return deletedValue;
     }
 
-    String edit(final long id, final String body){
+    String edit(final Long id, final String body){
         checkDiaryExists(id);
         return storage.put(id, body);
     }
 
-    private void checkDiaryExists(long id) {
+    private void checkDiaryExists(Long id) {
         if (!storage.containsKey(id)) {
             throw new NoSuchElementException("유효한 ID가 아닙니다.");
         }
