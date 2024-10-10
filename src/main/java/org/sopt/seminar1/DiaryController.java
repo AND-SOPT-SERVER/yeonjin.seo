@@ -41,13 +41,13 @@ public class DiaryController {
         diaryService.editDiary(parsedId, body);
     }
 
-    private void validateDiaryBody(String body) {
+    private void validateDiaryBody(final String body) {
         if (body.length() > MAX_DIARY_LENGTH) {
             throw new IllegalArgumentException("일기의 내용을 " + MAX_DIARY_LENGTH + "자 이내로 입력해주세요.");
         }
     }
 
-    private long parseId(String id) {
+    private long parseId(final String id) {
         try {
             return Long.parseLong(id);
         } catch (NumberFormatException e) {
