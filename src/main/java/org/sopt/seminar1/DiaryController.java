@@ -41,6 +41,15 @@ public class DiaryController {
         diaryService.editDiary(parsedId, body);
     }
 
+    final List<Diary> getTrash() {
+        return diaryService.getTrashDiaryList();
+    }
+
+    final void restore(final String id) {
+        final long parsedId = parseId(id);
+        diaryService.restoreDiary(parsedId);
+    }
+
     private void validateDiaryBody(final String body) {
         if (body.length() > MAX_DIARY_LENGTH) {
             throw new IllegalArgumentException("일기의 내용을 " + MAX_DIARY_LENGTH + "자 이내로 입력해주세요.");
