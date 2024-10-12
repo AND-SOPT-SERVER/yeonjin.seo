@@ -23,4 +23,14 @@ public class DiaryService {
         final String originalBody =  diaryRepository.edit(id, body);
         System.out.println("수정 완료 - " + id + " : " + originalBody + " -> " + body);
     }
+
+    List<Diary> getTrashDiaryList() {
+        return diaryRepository.findTrashAll();
+    }
+
+    void restoreDiary(final Long id){
+        final String deletedValue = diaryRepository.restore(id);
+        System.out.println("복구 완료 - " + id + " : " + deletedValue);
+    }
+
 }
