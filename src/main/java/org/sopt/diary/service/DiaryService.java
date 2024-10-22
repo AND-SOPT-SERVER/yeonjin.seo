@@ -1,5 +1,6 @@
 package org.sopt.diary.service;
 
+import org.sopt.diary.enums.Category;
 import org.sopt.diary.repository.DiaryEntity;
 import org.sopt.diary.repository.DiaryRepository;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,8 @@ public class DiaryService {
         this.diaryRepository = diaryRepository;
     }
 
-    public void createDiary(String title, String body){
-        DiaryEntity diaryEntity = new DiaryEntity(title, body);
+    public void createDiary(String title, String body, Category category){
+        DiaryEntity diaryEntity = new DiaryEntity(title, body, category);
         diaryRepository.save(diaryEntity);
     }
 
@@ -27,7 +28,7 @@ public class DiaryService {
 
         for(DiaryEntity diaryEntity : diaryEntityList) {
             diaryList.add(
-                    new Diary(diaryEntity.getId(), diaryEntity.getTitle(), diaryEntity.getBody(), diaryEntity.getCreatedDate())
+                    new Diary(diaryEntity.getId(), diaryEntity.getTitle(), diaryEntity.getBody(), diaryEntity.getCreatedDate(), diaryEntity.getCategory())
             );
         }
         return diaryList;
@@ -35,7 +36,7 @@ public class DiaryService {
 
     public Diary getDiaryById(final Long dairyId) {
         final Diary diary =  diaryRepository.findById(dairyId)
-                .map(diaryEntity -> new Diary(diaryEntity.getId(), diaryEntity.getTitle(), diaryEntity.getBody(), diaryEntity.getCreatedDate()))
+                .map(diaryEntity -> new Diary(diaryEntity.getId(), diaryEntity.getTitle(), diaryEntity.getBody(), diaryEntity.getCreatedDate(), diaryEntity.getCategory()))
                 .orElse(null);
 
         if (diary == null) {
@@ -58,5 +59,17 @@ public class DiaryService {
             throw new NoSuchElementException("해당 일기가 존재하지 않습니다.");
         }
         diaryRepository.deleteById(diaryId);
+    }
+
+    public List<Diary> getDiariesByCategory(Category category) {
+        final List<DiaryEntity> diaryEntityList = diaryRepository.findByCategory(category);
+        List<Diary> diaryList = new ArrayList<>();
+
+        for (DiaryEntity diaryEntity : diaryEntityList) {
+            diaryList.add(
+                    new Diary(diaryEntity.getId(), diaryEntity.getTitle(), diaryEntity.getBody(), diaryEntity.getCreatedDate(), diaryEntity.getCategory())
+            );
+        }
+        return diaryList;
     }
 }

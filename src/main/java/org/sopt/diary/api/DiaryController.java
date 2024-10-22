@@ -1,6 +1,7 @@
 package org.sopt.diary.api;
 
 import jakarta.validation.Valid;
+import org.sopt.diary.enums.Category;
 import org.sopt.diary.service.Diary;
 import org.sopt.diary.service.DiaryService;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,21 @@ public class DiaryController {
 
     @PostMapping()
     public ResponseEntity<Map<String, String>> post(@Valid @RequestBody CreateDiaryRequest request) {
-        diaryService.createDiary(request.getTitle(), request.getBody());
+        Category category = Category.fromKorean(request.getCategory());
+        diaryService.createDiary(request.getTitle(), request.getBody(), category);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(Map.of("message", "일기가 성공적으로 작성되었습니다."));
     }
 
     @GetMapping()
-    ResponseEntity<DiaryListResponse> get() {
-        List<Diary> diaryList = diaryService.getList();
+    ResponseEntity<DiaryListResponse> get(@RequestParam(required = false) String category) {
+        List<Diary> diaryList;
+        if (category != null) {
+            Category koreanCategory = Category.fromKorean(category);
+            diaryList = diaryService.getDiariesByCategory(koreanCategory);
+        } else {
+            diaryList = diaryService.getList();
+        }
 
         List<DiaryResponse> diaryResponsesList = new ArrayList<>();
         for(Diary diary: diaryList) {
@@ -42,7 +50,8 @@ public class DiaryController {
     public ResponseEntity<DiaryDetailResponse> getDetail(@PathVariable String diaryId) {
         Long longDiaryId = validateId(diaryId);
         Diary diary = diaryService.getDiaryById(longDiaryId);
-        DiaryDetailResponse diaryResponse = new DiaryDetailResponse(diary.getId(), diary.getTitle(), diary.getBody(), diary.getCreatedDate());
+        System.out.println(diary.getCategory());
+        DiaryDetailResponse diaryResponse = new DiaryDetailResponse(diary.getId(), diary.getTitle(), diary.getBody(), diary.getCreatedDate(), diary.getCategory());
         return ResponseEntity.ok(diaryResponse);
     }
 
