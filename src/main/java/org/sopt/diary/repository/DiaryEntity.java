@@ -11,7 +11,7 @@ public class DiaryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     public String title;
 
     @Column(nullable = false)

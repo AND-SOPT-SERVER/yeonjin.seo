@@ -30,14 +30,10 @@ public class DiaryController {
     }
 
     @GetMapping()
-    ResponseEntity<DiaryListResponse> get(@RequestParam(required = false) String category) {
+    ResponseEntity<DiaryListResponse> get(@RequestParam(required = false) String category, @RequestParam(defaultValue = "createdDate") String sortBy) {
         List<Diary> diaryList;
-        if (category != null) {
-            Category koreanCategory = Category.fromKorean(category);
-            diaryList = diaryService.getDiariesByCategory(koreanCategory);
-        } else {
-            diaryList = diaryService.getList();
-        }
+        Category koreanCategory = Category.fromKorean(category);
+        diaryList = diaryService.getList(koreanCategory,sortBy);
 
         List<DiaryResponse> diaryResponsesList = new ArrayList<>();
         for(Diary diary: diaryList) {
